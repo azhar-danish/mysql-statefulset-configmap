@@ -16,6 +16,23 @@ data:
 kubectl apply -f mysql-configmap.yml
 ------------------
 
+2) Create secret
+
+------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: dev
+type: Opaque
+data:
+  MYSQL_DATABASE: "ZGV2b3Bz"  # Base64 encoded value of "devops"
+  MYSQL_ROOT_PASSWORD: "MTIzNDU2"  # Base64 encoded value of "123456"
+
+
+kubectl apply -f mysql-secret.yml
+------------------
+
 2) create statefulSet
 
 ---------------------
@@ -46,8 +63,8 @@ spec:
                   key: MYSQL_DATABASE
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: mysql-config-map
+                secretKeyRef:
+                  name: mysql-secret
                   key: MYSQL_ROOT_PASSWORD
           ports:
             - containerPort: 3306
